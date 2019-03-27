@@ -21,7 +21,7 @@ $ npm i nhentai-gdrive-uploader
 ## Usage
 
 ```js
-const nHGet = require('./app')
+const nHGet = require('nhentai-gdrive-uploader')
 let urls = ['https://nhentai.net/g/267195/','https://nhentai.net/g/267191/'];
 nHGet.Save(urls,(err) =>{
     if(err) console.log(err)
