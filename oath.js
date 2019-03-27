@@ -26,10 +26,16 @@ const fs = require('fs');
 const path = require('path');
 
 const keyPath = path.join(__dirname, 'client_secret.json');
+const keyPathAsPackage = path.join(__dirname, '../../') + 'client_secret.json';
 const TOKEN_PATH = 'token.json';
 let keys = {}
-if (fs.existsSync(keyPath)) {
+if (fs.existsSync(keyPath) ) {
     const keyFile = require(keyPath);
+    keys = keyFile.installed || keyFile.web;
+    keys.redirect_uris = ['http://localhost:3000/oauth2callback']
+}else if (fs.existsSync(keyPathAsPackage)) {
+   
+    const keyFile = require(keyPathAsPackage);
     keys = keyFile.installed || keyFile.web;
     keys.redirect_uris = ['http://localhost:3000/oauth2callback']
 }
@@ -144,3 +150,4 @@ class Client {
 }
 
 module.exports = new Client();
+
