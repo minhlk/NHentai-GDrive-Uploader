@@ -114,26 +114,31 @@ if (module === require.main) {
 async function Save(urls, callback) {
   //let urls = ['https://nhentai.net/g/267195/','https://nhentai.net/g/267191/']
   const scopes = ['https://www.googleapis.com/auth/drive.metadata.readonly', 'https://www.googleapis.com/auth/drive.file'];
-  await client.authenticate(scopes, false)
-
-  urls.map((url) => {
-    nhentai_api.GetImageUrls(url)
-      .then((data) => {
-        if (data.status === 200) {
-          // sampleClient
-          // .authenticate(scopes, false)
-          uploadFile(data.imageUrls, data.title)
-            .catch((err) => {
-              // //INVALID TOKEN OR EXPIRED TOKEN 
-              // if (err.code === 401 || err.code === 400){
-              //   sampleClient.authenticate(scopes).then(() => console.log('Token updated,please run again')).catch(console.err)
-              // }else
-              callback(err)
-            })
-            .then(() => callback());
-        }
-      })
-  })
+ 
+  
+    await client.authenticate(scopes, false)
+    urls.map((url) => {
+      nhentai_api.GetImageUrls(url)
+        .then((data) => {
+          if (data.status === 200) {
+            // sampleClient
+            // .authenticate(scopes, false)
+            uploadFile(data.imageUrls.slice(0,3), data.title)
+              .catch(async (err) => {
+                // //INVALID TOKEN OR EXPIRED TOKEN 
+                if (err.code === 401 || err.code === 400){
+                  // console.log('Token updated,please run again')
+                  await client.authenticate(scopes)
+                  Save(urls, callback)
+                  
+                }else
+                callback(err)
+              })
+              .then(() => callback());
+          }
+        })
+    })
+  
 
 }
 
